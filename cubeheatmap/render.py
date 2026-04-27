@@ -112,8 +112,12 @@ def draw_grid(
         axes.flat[idx].axis("off")
 
     if suptitle:
-        fig.suptitle(suptitle, fontsize=style.title_fontsize + 2,
-                     fontweight=style.title_fontweight, color=style.title_color)
+        kwargs = {"fontsize": style.title_fontsize + 2,
+                  "fontweight": style.title_fontweight,
+                  "color": style.title_color}
+        if style.grid_suptitle_y is not None:
+            kwargs["y"] = style.grid_suptitle_y
+        fig.suptitle(suptitle, **kwargs)
 
     fig.tight_layout(pad=style.grid_pad)
     return fig
