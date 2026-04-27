@@ -248,7 +248,7 @@ def _add_colorbar(
     cbar_x = total_w + margin + style.colorbar_pad * sz
     cbar_w = total_w * style.colorbar_width_frac
     cax = ax.inset_axes(
-        [cbar_x, -margin, cbar_w, total_h + 2 * margin],
+        [cbar_x, 0, cbar_w, total_h],
         transform=ax.transData,
     )
 
