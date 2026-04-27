@@ -71,7 +71,6 @@ def draw_grid(
     ncols: int = 1,
     style: Style = default_style,
     sig_masks: Optional[List[Optional[np.ndarray]]] = None,
-    fig_pad: float = 2.0,
 ) -> plt.Figure:
     """Draw multiple heatmaps in a grid layout and return the figure."""
     n = len(heatmaps)
@@ -80,10 +79,27 @@ def draw_grid(
     _subtitles = subtitles or [""] * n
     _masks = sig_masks or [None] * n
 
-    col_w, row_h = _grid_cell_dims(heatmaps, style)
+    step = style.cell_size + style.cell_gap
+    label_w = style.grid_row_label_width
+    title_h = style.grid_title_height
+    col_label_h = style.grid_col_label_height
+
+    row_data_heights = [hm.n_rows * step for hm in heatmaps]
+    col_data_widths = [hm.n_cols * step for hm in heatmaps]
+
+    grid_row_heights: List[float] = []
+    for grid_row in range(nrows):
+        col_idxs = range(grid_row * ncols, min(grid_row * ncols + ncols, n))
+        grid_row_heights.append(max(row_data_heights[i] for i in col_idxs) + title_h + col_label_h)
+
+    max_col_data_w = max(col_data_widths) if col_data_widths else step
+    fig_w = (max_col_data_w + label_w) * ncols
+    fig_h = sum(grid_row_heights) + style.grid_pad
+
     fig, axes = plt.subplots(
         nrows, ncols,
-        figsize=(col_w * ncols, row_h * nrows),
+        figsize=(fig_w, fig_h),
+        gridspec_kw={"height_ratios": grid_row_heights},
         squeeze=False,
     )
     fig.patch.set_facecolor(style.fig_facecolor)
@@ -99,7 +115,7 @@ def draw_grid(
         fig.suptitle(suptitle, fontsize=style.title_fontsize + 2,
                      fontweight=style.title_fontweight, color=style.title_color)
 
-    fig.tight_layout(pad=fig_pad)
+    fig.tight_layout(pad=style.grid_pad)
     return fig
 
 
@@ -292,21 +308,9 @@ def _draw_title(
 
 
 def _figure_size(heatmap: CubeHeatmap, style: Style) -> Tuple[float, float]:
-    sz = style.cell_size
-    gap = style.cell_gap
-    step = sz + gap
-    base_w = heatmap.n_cols * step + 3.0
-    base_h = heatmap.n_rows * step + 2.0
+    step = style.cell_size + style.cell_gap
+    base_w = heatmap.n_cols * step + style.grid_row_label_width
+    base_h = heatmap.n_rows * step + style.grid_title_height + style.grid_col_label_height
     return base_w, base_h
 
 
-def _grid_cell_dims(
-    heatmaps: List[CubeHeatmap],
-    style: Style,
-) -> Tuple[float, float]:
-    max_cols = max(hm.n_cols for hm in heatmaps)
-    max_rows = max(hm.n_rows for hm in heatmaps)
-    sz = style.cell_size
-    gap = style.cell_gap
-    step = sz + gap
-    return max_cols * step + 3.0, max_rows * step + 2.0

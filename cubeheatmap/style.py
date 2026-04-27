@@ -65,5 +65,11 @@ class Style:
     # ── Axis spine ───────────────────────────────────────────────
     spine_color: str = "#444444"
 
+    # ── Grid layout sizing ───────────────────────────────────────
+    grid_row_label_width: float = 3.5
+    grid_title_height: float = 1.2
+    grid_col_label_height: float = 1.0
+    grid_pad: float = 2.0
+
 
 default_style = Style()
