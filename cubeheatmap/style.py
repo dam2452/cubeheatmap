@@ -31,8 +31,8 @@ class Style:
     # ── Row / col labels ─────────────────────────────────────────
     row_label_fontsize: float = 9.0
     col_label_fontsize: float = 10.0
-    col_label_rotation: float = 45.0
-    col_label_ha: str = "right"
+    col_label_rotation: float = 90.0
+    col_label_ha: str = "center"
     row_label_color: str = "#222222"
     col_label_color: str = "#222222"
     col_label_fontweight: str = "semibold"
