@@ -7,7 +7,7 @@ name = "cubeheatmap"
 version = "0.1.0"
 description = "Publication-quality square-cell heatmap visualisation for matplotlib"
 readme = "README.md"
-license = "MIT"
+license = "CC-BY-NC-4.0"
 license-files = ["LICENSE"]
 requires-python = ">=3.10"
 authors = [

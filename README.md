@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://pypi.org/project/cubeheatmap/"><img src="https://img.shields.io/pypi/v/cubeheatmap.svg" alt="PyPI"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-CC%20BY--NC%204.0-green.svg" alt="License"></a>
   <img src="https://img.shields.io/badge/python-3.10+-blue.svg" alt="Python">
 </p>
 
@@ -255,4 +255,6 @@ Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [Creative Commons Attribution-NonCommercial 4.0 International](LICENSE).
+
+You are free to use, modify, and share this software for non-commercial purposes, provided you give appropriate credit. Commercial use is not permitted. Contributions are welcome via [Pull Requests](https://github.com/dam2452/cubeheatmap/pulls).
