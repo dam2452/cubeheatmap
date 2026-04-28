@@ -132,7 +132,7 @@ def _build_norm_cmap(
     vmin = style.vmin if style.vmin is not None else float(heatmap.matrix.min())
     vmax = style.vmax if style.vmax is not None else float(heatmap.matrix.max())
     norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
-    cmap_obj = mcm.get_cmap(style.cmap)
+    cmap_obj = mcm.get_cmap(style.cmap) if hasattr(mcm, "get_cmap") else plt.colormaps[style.cmap]
     return norm, cmap_obj
 
 

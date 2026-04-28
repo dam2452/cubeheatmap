@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use cubeheatmap in your research, please cite it as below."
+type: software
+title: cubeheatmap
+version: 0.1.0
+abstract: >
+  A Python library for rendering publication-quality square-cell heatmaps
+  with matplotlib. Supports annotations, significance markers, grids,
+  and extensive styling options.
+license: MIT
+repository-code: "https://github.com/dam2452/cubeheatmap"
+keywords:
+  - heatmap
+  - visualization
+  - matplotlib
+  - publication-figures
+  - data-visualization
