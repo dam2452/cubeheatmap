@@ -103,7 +103,7 @@ If you use **cubeheatmap** in a publication, please cite it:
 
 **APA:**
 
-> dam2452. (2026). cubeheatmap: Publication-quality square-cell heatmaps for Python (Version 0.1.0). https://github.com/dam2452/cubeheatmap
+> dam2452. (2026). cubeheatmap: Publication-quality square-cell heatmaps for Python (Version 0.1.1). https://github.com/dam2452/cubeheatmap
 
 **BibTeX:**
 
@@ -112,7 +112,7 @@ If you use **cubeheatmap** in a publication, please cite it:
   title   = {cubeheatmap: Publication-quality square-cell heatmaps for Python},
   author  = {dam2452},
   year    = {2026},
-  version = {0.1.0},
+  version = {0.1.1},
   url     = {https://github.com/dam2452/cubeheatmap}
 }
 ```

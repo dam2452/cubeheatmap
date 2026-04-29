@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cubeheatmap"
-version = "0.1.0"
+version = "0.1.1"
 description = "Publication-quality square-cell heatmap visualisation for matplotlib"
 readme = "README.md"
 license = "CC-BY-NC-4.0"
