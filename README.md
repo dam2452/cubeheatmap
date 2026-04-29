@@ -15,7 +15,7 @@
 **cubeheatmap** renders clean, equal-sized square-cell heatmaps designed for scientific publications, reports, and presentations. Works with numpy arrays, pandas DataFrames, and any 2-D numerical data.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/dam2452/cubeheatmap/main/example_output/12_correlation.svg" alt="cubeheatmap preview" width="500"/>
+  <img src="example_output/12_correlation.svg" alt="cubeheatmap preview" width="500"/>
 </p>
 
 ## Features
@@ -63,9 +63,9 @@ For presets, customization and transforms see **[docs/usage.md](docs/usage.md)**
     <td align="center"><b>Dark theme</b></td>
   </tr>
   <tr>
-    <td><img src="https://raw.githubusercontent.com/dam2452/cubeheatmap/main/example_output/4_annotated.svg" width="300"/></td>
-    <td><img src="https://raw.githubusercontent.com/dam2452/cubeheatmap/main/example_output/5_sig_mask.svg" width="300"/></td>
-    <td><img src="https://raw.githubusercontent.com/dam2452/cubeheatmap/main/example_output/8_dark_theme.svg" width="300"/></td>
+    <td><img src="example_output/4_annotated.svg" width="300"/></td>
+    <td><img src="example_output/5_sig_mask.svg" width="300"/></td>
+    <td><img src="example_output/8_dark_theme.svg" width="300"/></td>
   </tr>
   <tr>
     <td align="center"><b>Grid layout</b></td>
@@ -73,9 +73,9 @@ For presets, customization and transforms see **[docs/usage.md](docs/usage.md)**
     <td align="center"><b>Likert survey</b></td>
   </tr>
   <tr>
-    <td><img src="https://raw.githubusercontent.com/dam2452/cubeheatmap/main/example_output/6_grid.svg" width="300"/></td>
-    <td><img src="https://raw.githubusercontent.com/dam2452/cubeheatmap/main/example_output/7_rounded.svg" width="300"/></td>
-    <td><img src="https://raw.githubusercontent.com/dam2452/cubeheatmap/main/example_output/13_survey.svg" width="300"/></td>
+    <td><img src="example_output/6_grid.svg" width="300"/></td>
+    <td><img src="example_output/7_rounded.svg" width="300"/></td>
+    <td><img src="example_output/13_survey.svg" width="300"/></td>
   </tr>
   <tr>
     <td align="center"><b>Citation network</b></td>
@@ -83,9 +83,9 @@ For presets, customization and transforms see **[docs/usage.md](docs/usage.md)**
     <td align="center"><b>Dense microarray</b></td>
   </tr>
   <tr>
-    <td><img src="https://raw.githubusercontent.com/dam2452/cubeheatmap/main/example_output/9_citation_network.svg" width="300"/></td>
-    <td><img src="https://raw.githubusercontent.com/dam2452/cubeheatmap/main/example_output/14_model_comparison.svg" width="300"/></td>
-    <td><img src="https://raw.githubusercontent.com/dam2452/cubeheatmap/main/example_output/16_dense_microarray.svg" width="300"/></td>
+    <td><img src="example_output/9_citation_network.svg" width="300"/></td>
+    <td><img src="example_output/14_model_comparison.svg" width="300"/></td>
+    <td><img src="example_output/16_dense_microarray.svg" width="300"/></td>
   </tr>
 </table>
 
