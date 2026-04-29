@@ -2,14 +2,20 @@
 
 from __future__ import annotations
 
-import json
-import re
 from collections import deque
+import json
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+import re
+from typing import (
+    Dict,
+    List,
+    Optional,
+    Tuple,
+)
 
 import numpy as np
 
+from . import _network_style
 from ..heatmap import CubeHeatmap
 from ..style import Style
 
@@ -18,7 +24,7 @@ def parse_requirements(path: str | Path) -> Dict[str, List[str]]:
     """Parse a ``requirements.txt`` into ``{package: [dependencies]}``.
 
     Only extracts the top-level package name (no version pins, no extras).
-    This returns a flat dict without actual transitive deps — use
+    This returns a flat dict without actual transitive deps - use
     :func:`adjacency_matrix` with manual dependency data for full graphs.
     """
     text = Path(path).read_text(encoding="utf-8")
@@ -106,22 +112,16 @@ def to_heatmap(
     """Convenience: return ``(CubeHeatmap, Style)`` for a dependency plot."""
     if mode == "adjacency":
         hm = adjacency_matrix(deps)
-        style = Style(
+        style = _network_style(
             cmap="Blues",
             vmin=0,
             vmax=1,
             colorbar_label="Depends on",
-            annotate=True,
-            annotate_fmt="{:.0f}",
-            col_label_rotation=45.0,
         )
     else:
         hm = depth_matrix(deps)
-        style = Style(
+        style = _network_style(
             cmap="YlGnBu",
             colorbar_label="Dependency depth",
-            annotate=True,
-            annotate_fmt="{:.0f}",
-            col_label_rotation=45.0,
         )
     return hm, style

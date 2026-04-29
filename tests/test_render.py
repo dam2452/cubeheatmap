@@ -1,6 +1,7 @@
 """Tests for draw() and draw_grid() rendering."""
 
 import matplotlib
+
 matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
@@ -8,7 +9,10 @@ import numpy as np
 import pytest
 
 from cubeheatmap.heatmap import CubeHeatmap
-from cubeheatmap.render import draw, draw_grid
+from cubeheatmap.render import (
+    draw,
+    draw_grid,
+)
 from cubeheatmap.style import Style
 
 

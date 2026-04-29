@@ -2,10 +2,15 @@
 
 from __future__ import annotations
 
-from typing import Dict, List, Tuple
+from typing import (
+    Dict,
+    List,
+    Tuple,
+)
 
 import numpy as np
 
+from . import _network_style
 from ..heatmap import CubeHeatmap
 from ..style import Style
 
@@ -21,27 +26,17 @@ def link_matrix(
         Mapping ``page → [list of pages it links to]``.
         Cell ``[i, j]`` counts how many times page *i* links to page *j*.
     """
-    pages = sorted(link_dict.keys())
+    pages = sorted(
+        set(link_dict.keys())
+        | {t for targets in link_dict.values() for t in targets},
+    )
     n = len(pages)
     idx = {p: i for i, p in enumerate(pages)}
 
-    all_pages = set(pages)
-    for targets in link_dict.values():
-        all_pages.update(targets)
-    all_pages = sorted(all_pages)
-
-    if len(all_pages) > n:
-        pages = all_pages
-        n = len(pages)
-        idx = {p: i for i, p in enumerate(pages)}
-
     matrix = np.zeros((n, n), dtype=float)
     for page, targets in link_dict.items():
-        if page not in idx:
-            continue
         for target in targets:
-            if target in idx:
-                matrix[idx[page], idx[target]] += 1.0
+            matrix[idx[page], idx[target]] += 1.0
     return CubeHeatmap.from_matrix(matrix, row_labels=pages, col_labels=pages)
 
 
@@ -76,23 +71,18 @@ def to_heatmap(
     """Convenience: return ``(CubeHeatmap, Style)`` for a web graph plot."""
     if mode == "similarity":
         hm = similarity_matrix(link_dict)
-        style = Style(
+        style = _network_style(
             cmap="magma",
             vmin=0,
             vmax=1,
             colorbar_label="Jaccard similarity",
-            annotate=True,
             annotate_fmt="{:.2f}",
-            col_label_rotation=45.0,
         )
     else:
         hm = link_matrix(link_dict)
-        style = Style(
+        style = _network_style(
             cmap="Blues",
             vmin=0,
             colorbar_label="Link count",
-            annotate=True,
-            annotate_fmt="{:.0f}",
-            col_label_rotation=45.0,
         )
     return hm, style

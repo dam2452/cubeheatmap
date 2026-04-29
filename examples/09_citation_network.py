@@ -1,10 +1,14 @@
-"""09 — Citation network preset (co-citation matrix)."""
+# pylint: disable=duplicate-code
+"""09 - Citation network preset (co-citation matrix)."""
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 import cubeheatmap as ch
+
+OUT = "example_output"
 
 papers = [
     "Smith 2020",
@@ -32,6 +36,6 @@ hm, style = ch.presets.citations.to_heatmap(papers, citation_map)
 style.cell_size = 0.65
 
 ax = ch.draw(hm, title="Co-citation Network", subtitle="Shared references between papers", style=style)
-ax.figure.savefig("example_output/09_citation_network.png", dpi=150, bbox_inches="tight")
+ax.figure.savefig(f"{OUT}/9_citation_network.svg", bbox_inches="tight")
 plt.close(ax.figure)
-print("-> example_output/09_citation_network.png")
+print(f"  {OUT}/9_citation_network.svg")

@@ -1,11 +1,15 @@
-"""07 — Rounded cell corners."""
+# pylint: disable=duplicate-code
+"""07 - Rounded cell corners."""
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
 import cubeheatmap as ch
+
+OUT = "example_output"
 
 rng = np.random.default_rng(42)
 TIMEPOINTS = ["Day14", "Day21", "Day40"]
@@ -25,6 +29,6 @@ style = ch.Style(
     colorbar_label="LFC",
 )
 ax = ch.draw(hm, title="Rounded corners", style=style)
-ax.figure.savefig("example_output/07_rounded.png", dpi=150, bbox_inches="tight")
+ax.figure.savefig(f"{OUT}/7_rounded.svg", bbox_inches="tight")
 plt.close(ax.figure)
-print("-> example_output/07_rounded.png")
+print(f"  {OUT}/7_rounded.svg")

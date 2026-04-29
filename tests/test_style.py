@@ -1,6 +1,9 @@
 """Tests for Style configuration."""
 
-from cubeheatmap.style import Style, default_style
+from cubeheatmap.style import (
+    Style,
+    default_style,
+)
 
 
 class TestStyleDefaults:

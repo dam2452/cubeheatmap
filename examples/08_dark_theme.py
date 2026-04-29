@@ -1,11 +1,15 @@
-"""08 — Dark background theme."""
+# pylint: disable=duplicate-code
+"""08 - Dark background theme."""
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
 import cubeheatmap as ch
+
+OUT = "example_output"
 
 rng = np.random.default_rng(42)
 TIMEPOINTS = ["Day14", "Day21", "Day40"]
@@ -31,6 +35,6 @@ dark = ch.Style(
     cell_gap=0.06,
 )
 ax = ch.draw(hm, title="Dark theme", subtitle="12 genes x 3 timepoints", style=dark)
-ax.figure.savefig("example_output/08_dark_theme.png", dpi=150, bbox_inches="tight")
+ax.figure.savefig(f"{OUT}/8_dark_theme.svg", bbox_inches="tight")
 plt.close(ax.figure)
-print("-> example_output/08_dark_theme.png")
+print(f"  {OUT}/8_dark_theme.svg")

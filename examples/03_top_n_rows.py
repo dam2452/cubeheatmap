@@ -1,11 +1,15 @@
-"""03 — top_n_rows() automatic row selection."""
+# pylint: disable=duplicate-code
+"""03 - top_n_rows() automatic row selection."""
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
 import cubeheatmap as ch
+
+OUT = "example_output"
 
 rng = np.random.default_rng(42)
 TIMEPOINTS = ["Day14", "Day21", "Day40"]
@@ -28,6 +32,6 @@ style = ch.Style(
     cell_size=0.5,
 )
 ax = ch.draw(hm, title="Top 20 genes (max |LFC|)", style=style)
-ax.figure.savefig("example_output/03_top_n_rows.png", dpi=150, bbox_inches="tight")
+ax.figure.savefig(f"{OUT}/3_top_n_rows.svg", bbox_inches="tight")
 plt.close(ax.figure)
-print("-> example_output/03_top_n_rows.png")
+print(f"  {OUT}/3_top_n_rows.svg")

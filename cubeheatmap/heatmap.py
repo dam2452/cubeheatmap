@@ -2,8 +2,16 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from dataclasses import (
+    dataclass,
+    field,
+)
+from typing import (
+    Any,
+    Dict,
+    List,
+    Tuple,
+)
 
 import numpy as np
 import pandas as pd
@@ -24,11 +32,11 @@ class CubeHeatmap:
         n_rows, n_cols = self.matrix.shape
         if len(self.row_labels) != n_rows:
             raise ValueError(
-                f"row_labels length ({len(self.row_labels)}) != matrix rows ({n_rows})"
+                f"row_labels length ({len(self.row_labels)}) != matrix rows ({n_rows})",
             )
         if len(self.col_labels) != n_cols:
             raise ValueError(
-                f"col_labels length ({len(self.col_labels)}) != matrix cols ({n_cols})"
+                f"col_labels length ({len(self.col_labels)}) != matrix cols ({n_cols})",
             )
 
     @property

@@ -1,11 +1,15 @@
-"""13 — Survey / Likert-scale results."""
+# pylint: disable=duplicate-code
+"""13 - Survey / Likert-scale results."""
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
 import cubeheatmap as ch
+
+OUT = "example_output"
 
 questions = [
     "Q1: Satisfaction",
@@ -37,6 +41,6 @@ style = ch.Style(
     col_label_rotation=0.0,
 )
 ax = ch.draw(hm, title="User Survey Results", subtitle="Mean Likert scores by age group", style=style)
-ax.figure.savefig("example_output/13_survey.png", dpi=150, bbox_inches="tight")
+ax.figure.savefig(f"{OUT}/13_survey.svg", bbox_inches="tight")
 plt.close(ax.figure)
-print("-> example_output/13_survey.png")
+print(f"  {OUT}/13_survey.svg")

@@ -2,7 +2,12 @@
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Tuple
+from dataclasses import dataclass
+from typing import (
+    List,
+    Optional,
+    Tuple,
+)
 
 import matplotlib.cm as mcm
 import matplotlib.colors as mcolors
@@ -11,7 +16,52 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from .heatmap import CubeHeatmap
-from .style import Style, default_style
+from .style import (
+    Style,
+    default_style,
+)
+
+# ── Geometry helper ──────────────────────────────────────────────
+
+@dataclass(frozen=True)
+class _Geometry:
+    """Pre-computed layout constants for square-cell grid placement."""
+
+    sz: float
+    gap: float
+    step: float
+    total_w: float
+    total_h: float
+    margin: float
+    n_rows: int
+    n_cols: int
+
+    @classmethod
+    def from_style(cls, heatmap: CubeHeatmap, style: Style) -> _Geometry:
+        sz = style.cell_size
+        gap = style.cell_gap
+        step = sz + gap
+        n_rows = heatmap.n_rows
+        n_cols = heatmap.n_cols
+        return cls(
+            sz=sz,
+            gap=gap,
+            step=step,
+            total_w=n_cols * step - gap,
+            total_h=n_rows * step - gap,
+            margin=gap,
+            n_rows=n_rows,
+            n_cols=n_cols,
+        )
+
+    def cell_xy(self, row: int, col: int) -> tuple[float, float]:
+        """Return (x, y) for the lower-left corner of cell at (row, col)."""
+        return col * self.step, (self.n_rows - 1 - row) * self.step
+
+    def cell_center(self, row: int, col: int) -> tuple[float, float]:
+        """Return (cx, cy) center of cell at (row, col)."""
+        x, y = self.cell_xy(row, col)
+        return x + self.sz / 2, y + self.sz / 2
 
 
 # ── Public API ───────────────────────────────────────────────────
@@ -43,20 +93,22 @@ def draw(
         Boolean array of shape ``(n_rows, n_cols)``. Cells where ``True``
         receive a significance marker on top.
     """
+    geo = _Geometry.from_style(heatmap, style)
+
     if ax is None:
-        fig_w, fig_h = _figure_size(heatmap, style)
+        fig_w, fig_h = _figure_size(geo, style)
         _, ax = plt.subplots(figsize=(fig_w, fig_h))
 
     ax.figure.patch.set_facecolor(style.fig_facecolor)
     ax.set_facecolor(style.ax_facecolor)
 
     norm, cmap_obj = _build_norm_cmap(heatmap, style)
-    _draw_cells(ax, heatmap, norm, cmap_obj, style, sig_mask)
-    _set_ticks(ax, heatmap, style)
-    _finalize_axes(ax, heatmap, style)
+    _draw_cells(ax, heatmap, geo, norm, cmap_obj, style, sig_mask)
+    _set_ticks(ax, heatmap, geo, style)
+    _finalize_axes(ax, geo, style)
 
     if style.show_colorbar:
-        _add_colorbar(ax, heatmap, norm, cmap_obj, style)
+        _add_colorbar(ax, geo, norm, cmap_obj, style)
 
     _draw_title(ax, title, subtitle, style)
     return ax
@@ -105,16 +157,20 @@ def draw_grid(
     fig.patch.set_facecolor(style.fig_facecolor)
 
     for idx, (hm, ax) in enumerate(zip(heatmaps, axes.flat)):
-        draw(hm, ax, title=_titles[idx], subtitle=_subtitles[idx],
-             style=style, sig_mask=_masks[idx])
+        draw(
+            hm, ax, title=_titles[idx], subtitle=_subtitles[idx],
+            style=style, sig_mask=_masks[idx],
+        )
 
     for idx in range(n, nrows * ncols):
         axes.flat[idx].axis("off")
 
     if suptitle:
-        kwargs = {"fontsize": style.title_fontsize + 2,
-                  "fontweight": style.title_fontweight,
-                  "color": style.title_color}
+        kwargs = {
+            "fontsize": style.title_fontsize + 2,
+            "fontweight": style.title_fontweight,
+            "color": style.title_color,
+        }
         if style.grid_suptitle_y is not None:
             kwargs["y"] = style.grid_suptitle_y
         fig.suptitle(suptitle, **kwargs)
@@ -132,78 +188,102 @@ def _build_norm_cmap(
     vmin = style.vmin if style.vmin is not None else float(heatmap.matrix.min())
     vmax = style.vmax if style.vmax is not None else float(heatmap.matrix.max())
     norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
-    cmap_obj = mcm.get_cmap(style.cmap) if hasattr(mcm, "get_cmap") else plt.colormaps[style.cmap]
+    try:
+        cmap_obj = plt.colormaps[style.cmap]
+    except (KeyError, AttributeError):
+        cmap_obj = mcm.get_cmap(style.cmap)
     return norm, cmap_obj
+
+
+def _make_cell_patch(
+    x: float,
+    y: float,
+    sz: float,
+    color: tuple,
+    style: Style,
+) -> mpatches.Patch:
+    if style.cell_rounding > 0:
+        return mpatches.FancyBboxPatch(
+            (x, y), sz, sz,
+            boxstyle=f"round,pad=0,rounding_size={style.cell_rounding * sz}",
+            facecolor=color,
+            edgecolor=style.cell_edgecolor,
+            linewidth=style.cell_edgewidth,
+        )
+    return mpatches.Rectangle(
+        (x, y), sz, sz,
+        facecolor=color,
+        edgecolor=style.cell_edgecolor,
+        linewidth=style.cell_edgewidth,
+    )
+
+
+def _draw_annotation(
+    ax: plt.Axes,
+    cx: float,
+    cy: float,
+    val: float,
+    norm: mcolors.Normalize,
+    style: Style,
+) -> None:
+    text_color = "white" if norm(val) < style.annotate_color_threshold else "black"
+    ax.text(
+        cx, cy, style.annotate_fmt.format(val),
+        ha="center", va="center",
+        fontsize=style.annotate_fontsize,
+        color=text_color,
+    )
+
+
+def _draw_sig_marker(
+    ax: plt.Axes,
+    cx: float,
+    cy: float,
+    sz: float,
+    style: Style,
+) -> None:
+    ax.text(
+        cx, cy + sz * 0.28, style.sig_marker,
+        ha="center", va="center",
+        fontsize=style.sig_marker_fontsize,
+        color=style.sig_marker_color,
+    )
 
 
 def _draw_cells(
     ax: plt.Axes,
     heatmap: CubeHeatmap,
+    geo: _Geometry,
     norm: mcolors.Normalize,
     cmap_obj: mcolors.Colormap,
     style: Style,
     sig_mask: Optional[np.ndarray],
 ) -> None:
-    sz = style.cell_size
-    gap = style.cell_gap
-    step = sz + gap
-
-    for row_idx in range(heatmap.n_rows):
-        for col_idx in range(heatmap.n_cols):
+    for row_idx in range(geo.n_rows):
+        for col_idx in range(geo.n_cols):
             val = heatmap.matrix[row_idx, col_idx]
             color = cmap_obj(norm(val))
-            x = col_idx * step
-            y = (heatmap.n_rows - 1 - row_idx) * step
+            x, y = geo.cell_xy(row_idx, col_idx)
 
-            if style.cell_rounding > 0:
-                patch = mpatches.FancyBboxPatch(
-                    (x, y), sz, sz,
-                    boxstyle=f"round,pad=0,rounding_size={style.cell_rounding * sz}",
-                    facecolor=color,
-                    edgecolor=style.cell_edgecolor,
-                    linewidth=style.cell_edgewidth,
-                )
-            else:
-                patch = mpatches.Rectangle(
-                    (x, y), sz, sz,
-                    facecolor=color,
-                    edgecolor=style.cell_edgecolor,
-                    linewidth=style.cell_edgewidth,
-                )
-            ax.add_patch(patch)
-
-            cx, cy = x + sz / 2, y + sz / 2
+            ax.add_patch(_make_cell_patch(x, y, geo.sz, color, style))
 
             if style.annotate:
-                normed = norm(val)
-                text_color = "white" if normed < style.annotate_color_threshold else "black"
-                ax.text(
-                    cx, cy, style.annotate_fmt.format(val),
-                    ha="center", va="center",
-                    fontsize=style.annotate_fontsize,
-                    color=text_color,
-                )
+                cx, cy = geo.cell_center(row_idx, col_idx)
+                _draw_annotation(ax, cx, cy, val, norm, style)
 
             if sig_mask is not None and sig_mask[row_idx, col_idx]:
-                ax.text(
-                    cx, cy + sz * 0.28, style.sig_marker,
-                    ha="center", va="center",
-                    fontsize=style.sig_marker_fontsize,
-                    color=style.sig_marker_color,
-                )
+                cx, cy = geo.cell_center(row_idx, col_idx)
+                _draw_sig_marker(ax, cx, cy, geo.sz, style)
 
 
 def _set_ticks(
     ax: plt.Axes,
     heatmap: CubeHeatmap,
+    geo: _Geometry,
     style: Style,
 ) -> None:
-    sz = style.cell_size
-    gap = style.cell_gap
-    step = sz + gap
-
-    col_positions = [i * step + sz / 2 for i in range(heatmap.n_cols)]
-    row_positions = [(heatmap.n_rows - 1 - i) * step + sz / 2 for i in range(heatmap.n_rows)]
+    col_positions = [i * geo.step + geo.sz / 2 for i in range(geo.n_cols)]
+    row_positions = [(geo.n_rows - 1 - i) * geo.step + geo.sz / 2 for i in range(geo.n_rows)]
 
     ax.set_xticks(col_positions)
     ax.set_xticklabels(
@@ -230,19 +310,11 @@ def _set_ticks(
 
 def _finalize_axes(
     ax: plt.Axes,
-    heatmap: CubeHeatmap,
+    geo: _Geometry,
     style: Style,
 ) -> None:
-    sz = style.cell_size
-    gap = style.cell_gap
-    step = sz + gap
-
-    total_w = heatmap.n_cols * step - gap
-    total_h = heatmap.n_rows * step - gap
-    margin = gap
-
-    ax.set_xlim(-margin, total_w + margin)
-    ax.set_ylim(-margin, total_h + margin)
+    ax.set_xlim(-geo.margin, geo.total_w + geo.margin)
+    ax.set_ylim(-geo.margin, geo.total_h + geo.margin)
     ax.set_aspect("equal")
 
     for spine in ax.spines.values():
@@ -253,22 +325,15 @@ def _finalize_axes(
 
 def _add_colorbar(
     ax: plt.Axes,
-    heatmap: CubeHeatmap,
+    geo: _Geometry,
     norm: mcolors.Normalize,
     cmap_obj: mcolors.Colormap,
     style: Style,
 ) -> None:
-    sz = style.cell_size
-    gap = style.cell_gap
-    step = sz + gap
-    total_w = heatmap.n_cols * step - gap
-    total_h = heatmap.n_rows * step - gap
-    margin = gap
-
-    cbar_x = total_w + margin + style.colorbar_pad * sz
-    cbar_w = total_w * style.colorbar_width_frac
+    cbar_x = geo.total_w + geo.margin + style.colorbar_pad * geo.sz
+    cbar_w = geo.total_w * style.colorbar_width_frac
     cax = ax.inset_axes(
-        [cbar_x, 0, cbar_w, total_h],
+        [cbar_x, 0, cbar_w, geo.total_h],
         transform=ax.transData,
     )
 
@@ -281,8 +346,10 @@ def _add_colorbar(
             fontsize=style.colorbar_fontsize,
             color=style.row_label_color,
         )
-    cbar.ax.tick_params(labelsize=style.colorbar_tick_fontsize,
-                        colors=style.row_label_color)
+    cbar.ax.tick_params(
+        labelsize=style.colorbar_tick_fontsize,
+        colors=style.row_label_color,
+    )
     for spine in cbar.ax.spines.values():
         spine.set_edgecolor(style.spine_color)
 
@@ -293,28 +360,19 @@ def _draw_title(
     subtitle: str,
     style: Style,
 ) -> None:
-    if subtitle:
-        ax.set_title(
-            f"{title}\n{subtitle}" if title else subtitle,
-            fontsize=style.title_fontsize,
-            fontweight=style.title_fontweight,
-            color=style.title_color,
-            pad=style.title_pad,
-        )
-    elif title:
-        ax.set_title(
-            title,
-            fontsize=style.title_fontsize,
-            fontweight=style.title_fontweight,
-            color=style.title_color,
-            pad=style.title_pad,
-        )
+    if not title and not subtitle:
+        return
+    full = f"{title}\n{subtitle}" if title and subtitle else (title or subtitle)
+    ax.set_title(
+        full,
+        fontsize=style.title_fontsize,
+        fontweight=style.title_fontweight,
+        color=style.title_color,
+        pad=style.title_pad,
+    )
 
 
-def _figure_size(heatmap: CubeHeatmap, style: Style) -> Tuple[float, float]:
-    step = style.cell_size + style.cell_gap
-    base_w = heatmap.n_cols * step + style.grid_row_label_width
-    base_h = heatmap.n_rows * step + style.grid_title_height + style.grid_col_label_height
+def _figure_size(geo: _Geometry, style: Style) -> Tuple[float, float]:
+    base_w = geo.n_cols * geo.step + style.grid_row_label_width
+    base_h = geo.n_rows * geo.step + style.grid_title_height + style.grid_col_label_height
     return base_w, base_h
-
-

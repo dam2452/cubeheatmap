@@ -1,30 +1,31 @@
-"""Run all example scripts and save outputs to example_output/."""
+"""Run all example scripts and save output to example_output/."""
 
+# pylint: disable=duplicate-code
 import os
-import glob
+from pathlib import Path
 import sys
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Ensure we run from project root
+ROOT = Path(__file__).resolve().parent.parent
 os.chdir(ROOT)
+sys.path.insert(0, str(ROOT))
 
-OUT = os.path.join(ROOT, "example_output")
-os.makedirs(OUT, exist_ok=True)
+# Ensure output dir exists
+OUT = ROOT / "example_output"
+OUT.mkdir(exist_ok=True)
 
-examples_dir = os.path.join(ROOT, "examples")
-scripts = sorted(glob.glob(os.path.join(examples_dir, "[0-9]*.py")))
+scripts = sorted(Path(__file__).resolve().parent.glob("[0-9]*.py"))
+scripts = [s for s in scripts if s.name != "generate_all.py"]
 
-print(f"Running {len(scripts)} examples...\n")
+print(f"Running {len(scripts)} examples from {ROOT}...\n")
 
 for script in scripts:
-    name = os.path.basename(script)
-    print(f"  {name}...", end=" ", flush=True)
+    print(f"  {script.name}...", end=" ", flush=True)
     try:
-        with open(script) as f:
+        with open(script, encoding="utf-8") as f:
             code = f.read()
-        exec(compile(code, script, "exec"), {"__name__": "__main__"})
-        print("OK")
+        exec(compile(code, str(script), "exec"), {"__name__": "__main__", "__file__": str(script)})  # pylint: disable=exec-used
     except Exception as e:
-        print(f"FAILED: {e}")
+        print(f"ERROR: {e}")
 
-n_pngs = len(glob.glob(os.path.join(OUT, "*.png")))
-print(f"\nDone! {n_pngs} images in {OUT}/")
+print(f"\nDone! {len(list(OUT.glob('*.svg')))} images in {OUT}/")

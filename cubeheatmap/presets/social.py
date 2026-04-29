@@ -3,10 +3,18 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import (
+    Dict,
+    List,
+    Tuple,
+)
 
 import numpy as np
 
+from . import (
+    _build_square_matrix,
+    _network_style,
+)
 from ..heatmap import CubeHeatmap
 from ..style import Style
 
@@ -22,13 +30,7 @@ def interaction_matrix(
         List of ``(source, target, weight)`` tuples, e.g. interactions or
         follower counts.
     """
-    users = sorted({e[0] for e in edges} | {e[1] for e in edges})
-    n = len(users)
-    idx = {u: i for i, u in enumerate(users)}
-    matrix = np.zeros((n, n), dtype=float)
-    for src, tgt, w in edges:
-        matrix[idx[src], idx[tgt]] += w
-    return CubeHeatmap.from_matrix(matrix, row_labels=users, col_labels=users)
+    return _build_square_matrix(edges, accumulate=True)
 
 
 def from_adjacency_file(
@@ -76,13 +78,8 @@ def from_interaction_counts(
     counts:
         Mapping of interaction pairs to their aggregated counts.
     """
-    users = sorted({k[0] for k in counts} | {k[1] for k in counts})
-    n = len(users)
-    idx = {u: i for i, u in enumerate(users)}
-    matrix = np.zeros((n, n), dtype=float)
-    for (src, tgt), w in counts.items():
-        matrix[idx[src], idx[tgt]] = w
-    return CubeHeatmap.from_matrix(matrix, row_labels=users, col_labels=users)
+    triples = [(src, tgt, w) for (src, tgt), w in counts.items()]
+    return _build_square_matrix(triples, accumulate=False)
 
 
 def to_heatmap(
@@ -90,11 +87,8 @@ def to_heatmap(
 ) -> Tuple[CubeHeatmap, Style]:
     """Convenience: return ``(CubeHeatmap, Style)`` for a social network plot."""
     hm = interaction_matrix(edges)
-    style = Style(
+    style = _network_style(
         cmap="Oranges",
         colorbar_label="Interactions",
-        annotate=True,
-        annotate_fmt="{:.0f}",
-        col_label_rotation=45.0,
     )
     return hm, style

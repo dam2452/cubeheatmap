@@ -1,11 +1,15 @@
-"""12 — Feature correlation matrix."""
+# pylint: disable=duplicate-code
+"""12 - Feature correlation matrix."""
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
 import cubeheatmap as ch
+
+OUT = "example_output"
 
 features = ["Age", "Income", "Score", "Hours", "Rating", "Tenure"]
 n = len(features)
@@ -32,6 +36,6 @@ style = ch.Style(
     cell_rounding=0.12,
 )
 ax = ch.draw(hm, title="Feature Correlation Matrix", style=style)
-ax.figure.savefig("example_output/12_correlation.png", dpi=150, bbox_inches="tight")
+ax.figure.savefig(f"{OUT}/12_correlation.svg", bbox_inches="tight")
 plt.close(ax.figure)
-print("-> example_output/12_correlation.png")
+print(f"  {OUT}/12_correlation.svg")

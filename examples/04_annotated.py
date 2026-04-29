@@ -1,11 +1,15 @@
-"""04 — Cell value annotations."""
+# pylint: disable=duplicate-code
+"""04 - Cell value annotations."""
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
 import cubeheatmap as ch
+
+OUT = "example_output"
 
 rng = np.random.default_rng(42)
 TIMEPOINTS = ["Day14", "Day21", "Day40"]
@@ -26,6 +30,6 @@ style = ch.Style(
     colorbar_label="LFC",
 )
 ax = ch.draw(hm, title="Annotated cells", style=style)
-ax.figure.savefig("example_output/04_annotated.png", dpi=150, bbox_inches="tight")
+ax.figure.savefig(f"{OUT}/4_annotated.svg", bbox_inches="tight")
 plt.close(ax.figure)
-print("-> example_output/04_annotated.png")
+print(f"  {OUT}/4_annotated.svg")

@@ -29,7 +29,7 @@ pytest tests/ -v
 
 - Python 3.10+
 - Follow existing code style (type hints, dataclasses, `from __future__ import annotations`)
-- Keep the public API stable — new features should extend, not break
+- Keep the public API stable - new features should extend, not break
 - Add examples for new features
 - Add tests for new functionality
 

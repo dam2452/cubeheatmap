@@ -1,11 +1,15 @@
-"""06 — draw_grid() multi-panel layout."""
+# pylint: disable=duplicate-code
+"""06 - draw_grid() multi-panel layout."""
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
 import cubeheatmap as ch
+
+OUT = "example_output"
 
 rng = np.random.default_rng(42)
 TIMEPOINTS = ["Day14", "Day21", "Day40"]
@@ -37,6 +41,6 @@ fig = ch.draw_grid(
     ncols=2,
     style=style,
 )
-fig.savefig("example_output/06_grid.png", dpi=150, bbox_inches="tight")
+fig.savefig(f"{OUT}/6_grid.svg", bbox_inches="tight")
 plt.close(fig)
-print("-> example_output/06_grid.png")
+print(f"  {OUT}/6_grid.svg")

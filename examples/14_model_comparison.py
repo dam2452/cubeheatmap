@@ -1,11 +1,15 @@
-"""14 — ML model benchmark comparison."""
+# pylint: disable=duplicate-code
+"""14 - ML model benchmark comparison."""
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
 import cubeheatmap as ch
+
+OUT = "example_output"
 
 models = ["Random Forest", "XGBoost", "Neural Net", "SVM", "KNN", "Logistic Reg."]
 datasets = ["MNIST", "CIFAR-10", "Tabular-1", "Tabular-2", "NLP-SENT"]
@@ -28,6 +32,6 @@ style = ch.Style(
     col_label_rotation=25.0,
 )
 ax = ch.draw(hm, title="ML Model Benchmark", subtitle="Accuracy across datasets", style=style)
-ax.figure.savefig("example_output/14_model_comparison.png", dpi=150, bbox_inches="tight")
+ax.figure.savefig(f"{OUT}/14_model_comparison.svg", bbox_inches="tight")
 plt.close(ax.figure)
-print("-> example_output/14_model_comparison.png")
+print(f"  {OUT}/14_model_comparison.svg")

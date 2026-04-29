@@ -1,11 +1,15 @@
-"""05 — Significance markers with sig_mask."""
+# pylint: disable=duplicate-code
+"""05 - Significance markers with sig_mask."""
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
 import cubeheatmap as ch
+
+OUT = "example_output"
 
 rng = np.random.default_rng(42)
 TIMEPOINTS = ["Day14", "Day21", "Day40"]
@@ -28,6 +32,6 @@ style = ch.Style(
     sig_marker_fontsize=9.0,
 )
 ax = ch.draw(hm, title="With significance markers", style=style, sig_mask=mask)
-ax.figure.savefig("example_output/05_sig_mask.png", dpi=150, bbox_inches="tight")
+ax.figure.savefig(f"{OUT}/5_sig_mask.svg", bbox_inches="tight")
 plt.close(ax.figure)
-print("-> example_output/05_sig_mask.png")
+print(f"  {OUT}/5_sig_mask.svg")

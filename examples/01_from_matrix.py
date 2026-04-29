@@ -1,11 +1,15 @@
-"""01 — Basic from_matrix() usage."""
+# pylint: disable=duplicate-code
+"""01 - Basic from_matrix() usage."""
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
 import cubeheatmap as ch
+
+OUT = "example_output"
 
 GENES = [
     "Il1b", "Tnf", "Cxcl10", "Ccr2", "S100a8", "Nos2",
@@ -33,6 +37,6 @@ ax = ch.draw(
     subtitle="Day14 / Day21 / Day40 vs Day0",
     style=style,
 )
-ax.figure.savefig("example_output/01_from_matrix.png", dpi=150, bbox_inches="tight")
+ax.figure.savefig(f"{OUT}/1_from_matrix.svg", bbox_inches="tight")
 plt.close(ax.figure)
-print("-> example_output/01_from_matrix.png")
+print(f"  {OUT}/1_from_matrix.svg")

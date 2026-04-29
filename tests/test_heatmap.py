@@ -6,7 +6,6 @@ import pytest
 
 from cubeheatmap.heatmap import CubeHeatmap
 
-
 # ── Constructors ──────────────────────────────────────────────────
 
 class TestFromMatrix:

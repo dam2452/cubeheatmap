@@ -1,10 +1,14 @@
-"""15 — Web graph preset (page link matrix)."""
+# pylint: disable=duplicate-code
+"""15 - Web graph preset (page link matrix)."""
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 import cubeheatmap as ch
+
+OUT = "example_output"
 
 link_dict = {
     "Home":       ["About", "Blog", "Products", "Contact"],
@@ -25,6 +29,6 @@ style.row_label_fontsize = 8.0
 style.col_label_fontsize = 8.0
 
 ax = ch.draw(hm, title="Website Link Graph", subtitle="Internal link adjacency matrix", style=style)
-ax.figure.savefig("example_output/15_webgraph.png", dpi=150, bbox_inches="tight")
+ax.figure.savefig(f"{OUT}/15_webgraph.svg", bbox_inches="tight")
 plt.close(ax.figure)
-print("-> example_output/15_webgraph.png")
+print(f"  {OUT}/15_webgraph.svg")

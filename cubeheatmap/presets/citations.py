@@ -2,12 +2,17 @@
 
 from __future__ import annotations
 
-import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+import re
+from typing import (
+    Dict,
+    List,
+    Tuple,
+)
 
 import numpy as np
 
+from . import _network_style
 from ..heatmap import CubeHeatmap
 from ..style import Style
 
@@ -30,7 +35,7 @@ def parse_bibtex(path: str | Path) -> List[Dict[str, str]]:
             "key": match.group(2).strip(),
         }
         for field_match in re.finditer(
-            r"(\w+)\s*=\s*\{([^}]*)\}", match.group(3)
+            r"(\w+)\s*=\s*\{([^}]*)\}", match.group(3),
         ):
             entry[field_match.group(1).lower()] = field_match.group(2).strip()
         entries.append(entry)
@@ -81,10 +86,9 @@ def author_collaboration_matrix(
     n = len(authors)
     matrix = np.zeros((n, n), dtype=float)
     author_idx = {a: i for i, a in enumerate(authors)}
-    for paper, pa_list in paper_authors.items():
-        for i_idx in range(len(pa_list)):
+    for _, pa_list in paper_authors.items():
+        for i_idx, a_i in enumerate(pa_list):
             for j_idx in range(i_idx + 1, len(pa_list)):
-                a_i = pa_list[i_idx]
                 a_j = pa_list[j_idx]
                 if a_i in author_idx and a_j in author_idx:
                     ii, jj = author_idx[a_i], author_idx[a_j]
@@ -100,13 +104,10 @@ def to_heatmap(
 ) -> Tuple[CubeHeatmap, Style]:
     """Convenience: return ``(CubeHeatmap, Style)`` for a co-citation plot."""
     hm = co_citation_matrix(papers, citation_map)
-    style = Style(
+    style = _network_style(
         cmap="YlOrRd",
         vmin=0,
         colorbar_label="Shared references",
         cell_gap=0.06,
-        annotate=True,
-        annotate_fmt="{:.0f}",
-        col_label_rotation=45.0,
     )
     return hm, style

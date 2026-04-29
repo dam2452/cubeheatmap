@@ -1,17 +1,23 @@
-"""16 — Dense microarray-style heatmap with tiny cells."""
+# pylint: disable=duplicate-code
+"""16 - Dense microarray-style heatmap with tiny cells."""
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
 import cubeheatmap as ch
 
+OUT = "example_output"
+
 rng = np.random.default_rng(42)
 
 genes = [f"Gene_{i:03d}" for i in range(80)]
-conditions = ["Ctrl", "Treat_1h", "Treat_4h", "Treat_12h", "Treat_24h",
-              "Treat_48h", "Treat_72h", "Recovery"]
+conditions = [
+    "Ctrl", "Treat_1h", "Treat_4h", "Treat_12h", "Treat_24h",
+    "Treat_48h", "Treat_72h", "Recovery",
+]
 
 matrix = rng.uniform(-3, 3, (len(genes), len(conditions)))
 hm = ch.CubeHeatmap.from_matrix(matrix, row_labels=genes, col_labels=conditions)
@@ -35,6 +41,6 @@ style = ch.Style(
 )
 
 ax = ch.draw(hm, title="Dense Microarray-style Heatmap", subtitle="80 genes x 8 conditions", style=style)
-ax.figure.savefig("example_output/16_dense_microarray.png", dpi=200, bbox_inches="tight")
+ax.figure.savefig(f"{OUT}/16_dense_microarray.svg", bbox_inches="tight")
 plt.close(ax.figure)
-print("-> example_output/16_dense_microarray.png")
+print(f"  {OUT}/16_dense_microarray.svg")

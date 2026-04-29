@@ -2,10 +2,18 @@
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Tuple
+from typing import (
+    Dict,
+    List,
+    Tuple,
+)
 
 import numpy as np
 
+from . import (
+    _build_square_matrix,
+    _network_style,
+)
 from ..heatmap import CubeHeatmap
 from ..style import Style
 
@@ -24,7 +32,6 @@ def stage_comparison_matrix(
     """
     names = [s["name"] for s in steps]
     n = len(steps)
-    idx = {name: i for i, name in enumerate(names)}
     matrix = np.zeros((n, n), dtype=float)
 
     for i, step in enumerate(steps):
@@ -76,13 +83,7 @@ def from_dag(
     edges:
         List of ``(source, target, weight)`` tuples.
     """
-    nodes = sorted({e[0] for e in edges} | {e[1] for e in edges})
-    n = len(nodes)
-    idx = {node: i for i, node in enumerate(nodes)}
-    matrix = np.zeros((n, n), dtype=float)
-    for src, tgt, w in edges:
-        matrix[idx[src], idx[tgt]] = w
-    return CubeHeatmap.from_matrix(matrix, row_labels=nodes, col_labels=nodes)
+    return _build_square_matrix(edges, accumulate=False)
 
 
 def to_heatmap(
@@ -90,12 +91,9 @@ def to_heatmap(
 ) -> Tuple[CubeHeatmap, Style]:
     """Convenience: return ``(CubeHeatmap, Style)`` for a pipeline plot."""
     hm = stage_comparison_matrix(steps)
-    style = Style(
+    style = _network_style(
         cmap="YlOrRd",
         vmin=0,
         colorbar_label="Data flow",
-        annotate=True,
-        annotate_fmt="{:.0f}",
-        col_label_rotation=45.0,
     )
     return hm, style

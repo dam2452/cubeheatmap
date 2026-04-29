@@ -1,10 +1,14 @@
-"""11 — Data pipeline preset (stage connectivity matrix)."""
+# pylint: disable=duplicate-code
+"""11 - Data pipeline preset (stage connectivity matrix)."""
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 import cubeheatmap as ch
+
+OUT = "example_output"
 
 steps = [
     {"name": "Extract API",    "inputs": [],                       "outputs": ["raw_json"]},
@@ -19,6 +23,6 @@ hm, style = ch.presets.pipeline.to_heatmap(steps)
 style.cell_size = 0.7
 
 ax = ch.draw(hm, title="ETL Pipeline", subtitle="Stage connectivity matrix", style=style)
-ax.figure.savefig("example_output/11_pipeline.png", dpi=150, bbox_inches="tight")
+ax.figure.savefig(f"{OUT}/11_pipeline.svg", bbox_inches="tight")
 plt.close(ax.figure)
-print("-> example_output/11_pipeline.png")
+print(f"  {OUT}/11_pipeline.svg")
