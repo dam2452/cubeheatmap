@@ -15,18 +15,18 @@
 **cubeheatmap** renders clean, equal-sized square-cell heatmaps designed for scientific publications, reports, and presentations. Works with numpy arrays, pandas DataFrames, and any 2-D numerical data.
 
 <p align="center">
-  <img src="example_output/6_grid.svg" alt="cubeheatmap preview" width="700"/>
+  <img src="example_output/12_correlation.svg" alt="cubeheatmap preview" width="500"/>
 </p>
 
 ## Features
 
-- **Square cells** — every cell is a perfect square, sized automatically
-- **Multiple input formats** — `from_matrix()`, `from_dataframe()`
-- **Annotations** — display values inside cells with auto-contrast text
-- **Significance markers** — overlay stars or custom symbols with `sig_mask`
-- **Grid layouts** — `draw_grid()` for multi-panel figures
-- **Fully customisable** — 36+ style parameters: colors, fonts, rounded corners, dark themes
-- **Domain presets** — citation networks, software dependencies, data pipelines, web graphs, social networks
+- **Square cells** - every cell is a perfect square, sized automatically
+- **Multiple input formats** - `from_matrix()`, `from_dataframe()`
+- **Annotations** - display values inside cells with auto-contrast text
+- **Significance markers** - overlay stars or custom symbols with `sig_mask`
+- **Grid layouts** - `draw_grid()` for multi-panel figures
+- **Fully customisable** - 36+ style parameters: colors, fonts, rounded corners, dark themes
+- **Domain presets** - citation networks, software dependencies, data pipelines, web graphs, social networks
 
 ## Installation
 
@@ -58,34 +58,34 @@ For presets, customization and transforms see **[docs/usage.md](docs/usage.md)**
 
 <table>
   <tr>
-    <td align="center"><b>From matrix</b></td>
     <td align="center"><b>Annotated</b></td>
+    <td align="center"><b>Significance markers</b></td>
     <td align="center"><b>Dark theme</b></td>
   </tr>
   <tr>
-    <td><img src="example_output/1_from_matrix.svg" width="300"/></td>
     <td><img src="example_output/4_annotated.svg" width="300"/></td>
+    <td><img src="example_output/5_sig_mask.svg" width="300"/></td>
     <td><img src="example_output/8_dark_theme.svg" width="300"/></td>
   </tr>
   <tr>
     <td align="center"><b>Grid layout</b></td>
     <td align="center"><b>Rounded corners</b></td>
-    <td align="center"><b>Correlation</b></td>
+    <td align="center"><b>Likert survey</b></td>
   </tr>
   <tr>
     <td><img src="example_output/6_grid.svg" width="300"/></td>
     <td><img src="example_output/7_rounded.svg" width="300"/></td>
-    <td><img src="example_output/12_correlation.svg" width="300"/></td>
+    <td><img src="example_output/13_survey.svg" width="300"/></td>
   </tr>
   <tr>
     <td align="center"><b>Citation network</b></td>
-    <td align="center"><b>Dependencies</b></td>
-    <td align="center"><b>Web graph</b></td>
+    <td align="center"><b>Model benchmark</b></td>
+    <td align="center"><b>Dense microarray</b></td>
   </tr>
   <tr>
     <td><img src="example_output/9_citation_network.svg" width="300"/></td>
-    <td><img src="example_output/10_dependencies.svg" width="300"/></td>
-    <td><img src="example_output/15_webgraph.svg" width="300"/></td>
+    <td><img src="example_output/14_model_comparison.svg" width="300"/></td>
+    <td><img src="example_output/16_dense_microarray.svg" width="300"/></td>
   </tr>
 </table>
 
