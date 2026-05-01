@@ -71,6 +71,7 @@ class Style:
     grid_col_label_height: float = 1.0
     grid_pad: float = 2.0
     grid_suptitle_y: Optional[float] = None
+    grid_suptitle_fontsize: Optional[float] = None
 
 
 default_style = Style()

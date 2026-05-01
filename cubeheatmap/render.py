@@ -167,7 +167,7 @@ def draw_grid(
 
     if suptitle:
         kwargs = {
-            "fontsize": style.title_fontsize + 2,
+            "fontsize": style.grid_suptitle_fontsize if style.grid_suptitle_fontsize is not None else style.title_fontsize + 2,
             "fontweight": style.title_fontweight,
             "color": style.title_color,
         }
